@@ -1,0 +1,726 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#08070b">
+<title>Pour Shinkiri</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Shippori+Mincho:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Yuji+Boku&text=シンキリへ黒未完一二三四五鴉が運んだ手紙Si un jour tu lis ces lignes, sache que&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add('js')</script>
+<style>
+  :root {
+    --sumi: #08070b;
+    --or: #e2cf9f;
+    --encre: #1d1815;
+    --cendre: #bdb4a6;
+    --rouge-vif: #ffb9a8;
+    --texte: "EB Garamond", Georgia, "Times New Roman", serif;
+    --mincho: "Shippori Mincho", "Yu Mincho", "Hiragino Mincho ProN", Georgia, serif;
+    --pinceau: "Yuji Boku", "Yu Mincho", "Hiragino Mincho ProN", serif;
+  }
+
+  * { box-sizing: border-box; }
+  html { background: var(--sumi); -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--sumi); color: var(--encre); font-family: var(--texte); overflow-x: hidden; }
+  .js body:not(.ouvert) { overflow: hidden; height: 100dvh; }
+  button { font: inherit; color: inherit; }
+  img { display: block; }
+
+  #decor {
+    position: fixed; inset: 0; z-index: 0;
+    background: var(--sumi) url("images/fond-ouverture.jpg") 58% 50% / cover no-repeat;
+    transition: filter 3s ease, transform 4s ease;
+  }
+  .ouvert #decor { filter: brightness(.56) saturate(.9) blur(1.5px); transform: scale(1.03); }
+
+  #teinte {
+    position: fixed; inset: 0; z-index: 1; pointer-events: none;
+    background: rgba(30, 20, 70, 0); transition: background-color 5s ease;
+  }
+  body.ouvert[data-acte="0"] #teinte { background-color: rgba(20, 16, 55, .2); }
+  body[data-acte="1"] #teinte { background-color: rgba(8, 22, 58, .36); }
+  body[data-acte="2"] #teinte { background-color: rgba(84, 6, 16, .36); }
+  body[data-acte="3"] #teinte { background-color: rgba(16, 15, 26, .5); }
+  body[data-acte="4"] #teinte { background-color: rgba(0, 0, 0, .66); }
+
+  #petales { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+
+  #seuil { display: none; }
+  .js #seuil {
+    position: fixed; inset: 0; z-index: 3; padding: 16px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(10px, 2.4vh, 22px);
+    transition: opacity 1.3s ease, visibility 0s linear 1.3s;
+  }
+  .ouvert #seuil { opacity: 0; visibility: hidden; pointer-events: none; }
+
+  .vertical {
+    position: absolute; left: calc(50% - 150px); top: 46%; margin: 0;
+    writing-mode: vertical-rl; transform: translate(-100%, -50%);
+    font-family: var(--pinceau); font-size: clamp(20px, 3.2vh, 28px); letter-spacing: .24em; color: #f4e7c6;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, .9), 0 0 24px rgba(0, 0, 0, .7);
+  }
+  @media (max-width: 640px) { .vertical { display: none; } }
+
+  .fumi {
+    position: relative; height: min(66vh, 600px); aspect-ratio: 310 / 1200; cursor: pointer;
+    filter: drop-shadow(0 22px 30px rgba(0, 0, 0, .68));
+    animation: flotte 7s ease-in-out infinite;
+    transition: filter .35s ease;
+  }
+  .fumi:hover { filter: drop-shadow(0 22px 30px rgba(0, 0, 0, .68)) drop-shadow(0 0 22px rgba(205, 185, 255, .5)); }
+  @keyframes flotte { 50% { transform: translateY(-9px); } }
+  .fumi .part { position: absolute; inset: 0; transition: transform .95s cubic-bezier(.2, .7, .25, 1), opacity .95s ease .15s; }
+  .fumi .papier { width: 100%; height: 100%; }
+  .fumi .nom { position: absolute; left: 34%; top: 47%; height: 36%; width: auto; opacity: .92; }
+  .fumi .kuro { position: absolute; left: 62%; top: 77%; width: 25%; transform: rotate(-3deg); }
+  .coupe .fumi { animation: none; }
+  .coupe .fumi .a { clip-path: polygon(-20% -10%, 120% -10%, 120% 28%, -20% 60%); transform: translate(-13%, -7%) rotate(-5deg); opacity: 0; }
+  .coupe .fumi .b { clip-path: polygon(-20% 60%, 120% 28%, 120% 110%, -20% 110%); transform: translate(12%, 11%) rotate(4deg); opacity: 0; }
+
+  #trancher {
+    width: min(350px, calc(100vw - 32px)); aspect-ratio: 1098 / 218; padding: 0; border: 0; cursor: pointer;
+    background: url("images/plaque-noire.webp") center / 100% 100% no-repeat;
+    color: var(--or); text-align: center; line-height: 1.25;
+    font-family: var(--mincho); font-weight: 700; font-size: 18px; letter-spacing: .05em;
+    filter: drop-shadow(0 8px 18px rgba(0, 0, 0, .7));
+    transition: filter .3s ease, transform .3s ease, opacity .3s ease;
+  }
+  #trancher:hover { filter: brightness(1.2) drop-shadow(0 0 16px rgba(205, 185, 255, .55)); transform: translateY(-2px); }
+  #trancher:focus-visible { outline: 2px solid var(--or); outline-offset: 4px; }
+  .coupe #trancher { opacity: 0; }
+
+  #entaille {
+    position: fixed; inset: 0; z-index: 7; width: 100%; height: 100%; object-fit: cover; pointer-events: none;
+    visibility: hidden; mix-blend-mode: screen;
+    -webkit-mask-image: linear-gradient(62deg, #000 46%, transparent 54%); mask-image: linear-gradient(62deg, #000 46%, transparent 54%);
+    -webkit-mask-size: 300% 300%; mask-size: 300% 300%;
+    -webkit-mask-position: 100% 0; mask-position: 100% 0;
+  }
+  .tranche #entaille { visibility: visible; animation: lame .42s cubic-bezier(.3, 0, .2, 1) forwards, dissipe .85s ease .5s forwards; }
+  @keyframes lame { to { -webkit-mask-position: 0 100%; mask-position: 0 100%; } }
+  @keyframes dissipe { to { opacity: 0; } }
+  #eclair { position: fixed; inset: 0; z-index: 6; background: #f1ecff; opacity: 0; pointer-events: none; }
+  .tranche #eclair { animation: eclair .55s ease-out .22s; }
+  @keyframes eclair { 0% { opacity: 0; } 12% { opacity: .7; } 100% { opacity: 0; } }
+
+  #lettre { position: relative; z-index: 4; padding: 0; }
+  .js #lettre { opacity: 0; transform: translateY(70px); transition: opacity 1.6s ease .3s, transform 2s cubic-bezier(.2, .7, .2, 1) .3s; }
+  .js body:not(.ouvert) #lettre { visibility: hidden; pointer-events: none; }
+  .js .ouvert #lettre { opacity: 1; transform: none; }
+  .rouleau { position: relative; width: min(100%, 900px); margin: 0 auto; padding-top: 6vh; }
+
+  .baton {
+    position: sticky; top: 0; z-index: 3; width: calc(100% + 28px); max-width: 100vw; height: auto; margin: 0 auto -6px;
+    left: -14px; transform: translateX(-14px);
+    filter: drop-shadow(0 9px 12px rgba(0, 0, 0, .7));
+  }
+  @media (max-width: 930px) { .baton { width: 100%; left: 0; transform: none; } }
+
+  .brocart {
+    position: relative; padding: 0 clamp(9px, 4.6vw, 46px);
+    background: #1a1236 url("images/brocart.jpg") 0 0 / 150px auto;
+  }
+  .brocart::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    box-shadow: inset 24px 0 30px -18px rgba(0, 0, 0, .8), inset -24px 0 30px -18px rgba(0, 0, 0, .8);
+  }
+  .brocart.bas {
+    --haut: 84px;
+    -webkit-mask: linear-gradient(#000 0 0) top / 100% calc(100% - var(--haut) + 1px) no-repeat, url("images/dechirure-masque.webp") bottom / 100% var(--haut) no-repeat;
+    mask: linear-gradient(#000 0 0) top / 100% calc(100% - var(--haut) + 1px) no-repeat, url("images/dechirure-masque.webp") bottom / 100% var(--haut) no-repeat;
+  }
+  .brocart .bord { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; width: 100%; height: 84px; pointer-events: none; }
+
+  .feuille {
+    position: relative; z-index: 1; overflow: hidden;
+    padding: clamp(46px, 8vw, 92px) clamp(24px, 7.4vw, 82px) 1px;
+    background: #ecdfbf url("images/washi.jpg") 0 0 / 760px auto;
+    box-shadow: inset 12px 0 26px -14px rgba(70, 42, 12, .55), inset -12px 0 26px -14px rgba(70, 42, 12, .55);
+  }
+  .bas .feuille { padding-top: 0; padding-bottom: 96px; overflow: visible; }
+  .feuille p {
+    position: relative; z-index: 1; margin: 0 0 1.5em;
+    font-size: clamp(19px, 2.5vw, 21.5px); line-height: 1.74;
+    hyphens: none; -webkit-hyphens: none;
+  }
+  @media (min-width: 640px) { .feuille p { text-align: justify; } }
+  .js .feuille p { opacity: 0; transform: translateY(12px); transition: opacity 1.4s ease, transform 1.4s ease; }
+  .js .feuille p.vu { opacity: 1; transform: none; }
+  .feuille p.ouverture::first-letter {
+    float: left; padding: .06em .1em 0 0;
+    font-family: var(--mincho); font-weight: 700; font-size: 3.4em; line-height: .8; color: #8f1820;
+  }
+  .feuille p.mot { font-style: italic; padding-bottom: 1.5em; border-bottom: 1px solid rgba(29, 24, 21, .25); }
+
+  .acte { position: relative; z-index: 1; display: flex; align-items: center; gap: 12px; margin: 2.8em 0 2.5em; }
+  .acte:first-of-type { margin-top: 0; }
+  .acte::before, .acte::after { content: ""; flex: 1; height: 15px; opacity: .78; background: url("images/trait.webp") left center / 100% 100% no-repeat; }
+  .acte::before { transform: scaleX(-1); }
+  .acte img { width: 56px; height: auto; transform: rotate(-3deg); }
+
+  .larme {
+    position: absolute; z-index: 0; pointer-events: none;
+    background: radial-gradient(closest-side, rgba(115, 90, 60, .07) 0 76%, rgba(90, 62, 38, .2) 92%, transparent 100%);
+  }
+
+  #inacheve { position: relative; z-index: 1; }
+  .feuille p.fragment { margin: 0; text-align: left; hyphens: none; color: var(--encre); min-height: 1.74em; }
+  .js .feuille p.fragment { opacity: 1; transform: none; }
+  .fragment i { font-style: normal; white-space: pre-wrap; opacity: 0; transition: opacity .35s ease; }
+  .vide { position: relative; height: 340px; }
+  #trainee {
+    position: absolute; left: 0; top: 0; width: 60%; height: 38px; pointer-events: none; opacity: .92;
+    clip-path: inset(-20% 100% -20% 0); transition: clip-path 2.6s cubic-bezier(.3, .6, .4, 1);
+  }
+  #inacheve.fini #trainee { clip-path: inset(-20% 0 -20% 0); }
+  .goutte { position: absolute; left: 70%; top: 0; width: 56px; height: auto; opacity: 0; transform: scale(.3); transition: opacity .25s ease, transform .7s cubic-bezier(.2, 1.5, .4, 1); }
+  #inacheve.tache .goutte { opacity: .94; transform: none; }
+  .fude {
+    position: absolute; left: 0; top: 0; z-index: 3; width: min(76%, 470px); height: auto; opacity: 0; pointer-events: none;
+    transform-origin: 0 50%; filter: drop-shadow(4px 10px 7px rgba(50, 30, 10, .45));
+  }
+  .sceau-fin { position: absolute; left: 2.5%; bottom: 14px; width: 76px; height: auto; opacity: 0; transform: rotate(-7deg) scale(1.7); }
+  #inacheve.tampon .sceau-fin { animation: tampon .55s cubic-bezier(.2, .9, .3, 1) forwards; }
+  @keyframes tampon { to { opacity: .92; transform: rotate(-7deg) scale(1); } }
+
+  #higanbana { width: min(100%, 780px); height: auto; margin: -34px auto 0; opacity: 0; transition: opacity 5s ease .6s; }
+  .pied #higanbana { opacity: 1; }
+
+  #fil {
+    position: fixed; left: 0; top: 0; z-index: 6; width: 100%; height: 3px;
+    background: linear-gradient(90deg, #8f1820, #e2574c); transform: scaleX(var(--avance, 0)); transform-origin: left;
+    opacity: 0; transition: opacity 1.5s ease 1.5s;
+  }
+  .ouvert #fil { opacity: .95; }
+
+  #lecteur {
+    position: fixed; left: 12px; bottom: 12px; z-index: 6;
+    display: flex; align-items: center; gap: 12px; width: min(calc(100vw - 24px), 430px); height: 76px; padding: 0 12px 0 40px;
+    border: 1px solid transparent; border-image: url("images/plaque-rouge.webp") 16 210 fill / 5px 74px stretch;
+    font-family: var(--mincho); filter: drop-shadow(0 8px 18px rgba(0, 0, 0, .65));
+    opacity: 0; visibility: hidden; transform: translateY(16px); transition: opacity 1.4s ease 1.6s, transform 1.4s ease 1.6s;
+  }
+  .ouvert #lecteur { opacity: 1; visibility: visible; transform: none; }
+  .barres { display: flex; align-items: flex-end; gap: 3px; height: 16px; flex: none; }
+  .barres b { width: 3px; height: 100%; background: var(--or); transform-origin: bottom; animation: danse 1.1s ease-in-out infinite alternate; }
+  .barres b:nth-child(2) { animation-duration: .8s; animation-delay: -.3s; }
+  .barres b:nth-child(3) { animation-duration: 1.35s; animation-delay: -.6s; }
+  @keyframes danse { from { transform: scaleY(.25); } to { transform: scaleY(1); } }
+  .muet .barres b { animation-play-state: paused; opacity: .45; }
+  .infos { flex: 1; min-width: 0; line-height: 1.2; transition: opacity .7s ease; text-shadow: 0 1px 4px rgba(0, 0, 0, .8); }
+  .infos.change { opacity: 0; }
+  .infos strong { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 15px; color: var(--rouge-vif); }
+  .infos span { font-size: 12.5px; color: #e4d8ca; }
+
+  #volume { flex: none; width: 96px; height: 28px; margin: 0; padding: 0; background: none; cursor: pointer; -webkit-appearance: none; appearance: none; }
+  #volume::-webkit-slider-runnable-track { height: 11px; background: url("images/curseur-piste.webp") center / 100% 100% no-repeat; }
+  #volume::-moz-range-track { height: 11px; background: url("images/curseur-piste.webp") center / 100% 100% no-repeat; }
+  #volume::-webkit-slider-thumb { -webkit-appearance: none; width: 24px; height: 24px; margin-top: -7px; border: 0; background: url("images/curseur-bouton.webp") center / contain no-repeat; }
+  #volume::-moz-range-thumb { width: 24px; height: 24px; border: 0; background: url("images/curseur-bouton.webp") center / contain no-repeat; }
+  #volume:focus-visible { outline: 2px solid var(--or); outline-offset: 2px; }
+  .sans-volume #volume { display: none; }
+
+  #son {
+    flex: none; width: 50px; height: 50px; padding: 0; cursor: pointer; border: 0; border-radius: 50%;
+    background: url("images/bouton-son.webp") center / contain no-repeat;
+    transition: transform .25s ease, opacity .25s ease, filter .25s ease;
+  }
+  #son:hover { transform: scale(1.07); }
+  #son:focus-visible { outline: 2px solid var(--or); outline-offset: 3px; }
+  .muet #son { opacity: .6; filter: grayscale(.85); }
+
+  @media (max-width: 1640px) {
+    #lecteur { left: auto; right: 8px; bottom: 8px; width: auto; max-width: calc(100vw - 16px); height: 68px; gap: 10px; padding: 0 9px 0 30px; border-image-width: 5px 62px; }
+    .infos { flex: none; max-width: 0; overflow: hidden; opacity: 0; transition: max-width .8s ease, opacity .6s ease; }
+    #lecteur.annonce .infos { max-width: 190px; opacity: 1; }
+    #volume { width: 84px; }
+    #son { width: 46px; height: 46px; }
+  }
+  @media (max-width: 480px) { #lecteur.annonce .infos { max-width: 118px; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fumi, .barres b { animation: none; }
+    .js #lettre, .js .feuille p, #decor { transition-duration: .01s; transition-delay: 0s; }
+    #entaille, #eclair { display: none; }
+  }
+  @media print {
+    #seuil, #decor, #teinte, #petales, #lecteur, #fil, #entaille, #eclair, #higanbana, .baton, .fude, .goutte, #trainee { display: none !important; }
+    .feuille p { opacity: 1 !important; transform: none !important; }
+    #lettre { opacity: 1 !important; transform: none !important; }
+    .brocart { padding: 0; background: none; -webkit-mask: none; mask: none; }
+  }
+</style>
+</head>
+<body data-acte="0">
+
+<div id="decor" aria-hidden="true">
+</div>
+<div id="teinte"></div>
+<canvas id="petales" aria-hidden="true"></canvas>
+<div id="fil" aria-hidden="true"></div>
+<div id="eclair" aria-hidden="true"></div>
+
+<img id="entaille" src="images/lame.jpg" alt="" aria-hidden="true">
+
+<section id="seuil" aria-label="Lettre scellée">
+  <p class="vertical" lang="ja" aria-hidden="true">鴉が運んだ手紙</p>
+
+  <div class="fumi" id="fumi" aria-hidden="true">
+    <div class="part a">
+      <img class="papier" src="images/lettre-pliee.webp" alt="">
+      <img class="nom" src="images/nom.webp" alt="">
+      <img class="kuro" src="images/sceau-kuro.webp" alt="">
+    </div>
+  </div>
+
+  <button id="trancher" class="plaque" type="button">Trancher le cordon</button>
+</section>
+
+<main id="lettre">
+  <div class="rouleau">
+    <img class="baton" src="images/baton.webp" alt="" aria-hidden="true">
+    <div class="brocart">
+      <article class="feuille">
+        <p class="mot" hidden></p>
+
+        <div class="acte" aria-hidden="true"><img src="images/sceau-1.webp" alt=""></div>
+
+        <p class="ouverture">Ça ne sert à rien de me dire tout ça, Shinkiri. J'ai atteint ma limite, et cette fois, elle vient réellement d'être dépassée. Tu peux me dire toutes les belles paroles que tu veux, essayer de me rassurer, me promettre que les choses vont changer ou me répéter que tu m'as tout dit, mais je crois que je suis arrivée à un stade où plus rien de tout cela ne parvient à m'atteindre comme avant. Ce n'est même pas que je refuse de t'écouter ou que je ne souhaite plus croire en toi. C'est bien plus triste que ça, je n'en ai simplement plus la force. Je n'ai même plus cette énergie que je trouvais autrefois pour me convaincre que tes paroles étaient sincères. Pendant tout ce temps, chaque fois que tu me disais que tout irait bien, je m'accrochais à ces mots comme si ma vie en dépendait. Je les reprenais dans ma tête, je les repassais encore et encore, je cherchais à y trouver suffisamment de vérité pour pouvoir continuer à avancer. Je me disais que tu m'aimais, que tu ne voulais pas me faire de mal, que les choses finiraient par s'arranger et que toutes ces blessures ne seraient qu'une mauvaise période que nous finirions par dépasser ensemble. Je voulais tellement que ce soit vrai que je finissais parfois par y croire davantage que toi même. Mais aujourd'hui, même cette capacité que j'avais de me rassurer toute seule semble m'avoir abandonnée. Je peux encore entendre tes paroles, je peux encore comprendre ce que tu essaies de me dire, mais je ne ressens plus cette envie de m'y accrocher. Et crois moi, c'est probablement l'une des choses les plus douloureuses que j'aie eu à constater chez moi, parce que je n'ai jamais voulu arriver à un point où les mots de la personne que j'aime ne suffiraient même plus à me rassurer.</p>
+
+        <p>Toute ma vie, je n'ai pourtant demandé qu'une seule chose. Une seule chose qui me semblait tellement simple, tellement évidente, que je n'aurais jamais imaginé devoir me battre autant pour l'obtenir, que l'on se dise les choses, que l'on puisse se parler honnêtement et que je n'aie pas à découvrir par d'autres personnes ce qui aurait dû venir de toi. Je ne t'ai jamais demandé d'être parfait, je ne t'ai jamais demandé de ne jamais commettre d'erreurs et je n'ai jamais prétendu que notre relation devait être dépourvue de difficultés. Je savais parfaitement que nous pouvions traverser des périodes compliquées, que tu pouvais aller mal, avoir des doutes ou avoir besoin de temps. J'aurais pu entendre des vérités difficiles, accepter des situations qui ne me plaisaient pas et essayer de comprendre des choses que je n'aurais pas forcément comprises immédiatement. Mais pour cela, encore aurait il fallu que tu me laisses cette possibilité. J'ai eu l'impression de passer ma vie à courir après une vérité que tu aurais simplement pu me donner. J'ai été de mensonge en mensonge, de découverte en découverte, et chaque fois que j'apprenais quelque chose par les autres, je revenais vers toi avec l'espoir que, cette fois, tu choisirais enfin de me parler franchement. J'insistais, je te demandais si c'était bien la vérité, je cherchais à savoir si tu avais autre chose à me dire, si certaines informations m'étaient encore cachées. Et trop souvent, tu me répondais d'une manière qui me faisait croire que je savais tout, alors que je finissais par découvrir le contraire. Je ne sais même plus combien de fois j'ai ressenti cette sensation de tomber de haut en comprenant que, une fois encore, je n'avais pas eu droit à la vérité. Ce qui me détruisait n'était pas uniquement ce que j'apprenais, mais le fait de réaliser que j'avais encore accordé ma confiance à des paroles qui ne correspondaient pas à la réalité.</p>
+
+        <p>Et pourtant, le pire dans toute cette histoire, c'est que je me suis autant menti à moi même que tu m'as menti. Après chaque découverte, après chaque contradiction, après chaque nouvelle blessure, je cherchais encore une explication qui me permettrait de continuer à croire en toi. Je me disais que tu me mentais pour mon bien, que tu traversais peut être une mauvaise période, que tu avais peur de ma réaction, que tu ne voulais pas m'inquiéter ou que tu avais une raison que je ne pouvais tout simplement pas comprendre. Je construisais moi même des explications à tes silences, je trouvais des circonstances atténuantes à tes mensonges et je finissais par défendre tes actes dans ma propre tête alors même que j'étais celle qui en souffrait. Je me disais qu'il fallait que je sois patiente, que je ne devais pas tirer de conclusions trop rapidement, que je devais te laisser le temps de changer. Je prenais tes belles paroles et je les utilisais pour faire taire cette petite voix qui, au fond de moi, me disait que quelque chose n'allait pas. Combien de fois ai je dû me convaincre que tu ne recommencerais pas ? Combien de fois ai je dû me répéter que tu avais compris, que tu avais changé et que je pouvais enfin baisser ma garde ? Je finissais même par avoir honte de mes propres doutes, comme si le problème venait de ma méfiance et non de tout ce qui avait progressivement détruit ma confiance. J'avais peur de devenir injuste envers toi, peur de ne pas suffisamment te comprendre, peur de te faire du mal en insistant. Alors je retournais la situation contre moi même, je me demandais si je n'en demandais pas trop, si je n'étais pas trop exigeante, si je ne devais pas simplement accepter les choses. Et pendant que je cherchais sans cesse ce que je pouvais améliorer chez moi, je ne réalisais même plus à quel point je m'étais habituée à vivre avec des blessures que je n'aurais jamais dû avoir à supporter.</p>
+
+        <p>J'avais constamment l'impression d'être une inconnue dans ta vie. C'est difficile à expliquer, parce que j'étais pourtant là, je partageais ton quotidien, je voulais construire quelque chose avec toi, je voulais être cette personne à laquelle tu pouvais tout dire sans avoir à réfléchir à la manière dont tu allais le formuler. Je ne voulais pas être quelqu'un devant qui tu devais jouer un rôle ou dissimuler une partie de ta vie. Je voulais simplement être ta compagne, celle qui pouvait entendre tes difficultés, tes erreurs, tes inquiétudes et même les choses dont tu avais honte, sans que tu aies besoin de me cacher la vérité. Je me suis pliée en quatre pour essayer de te donner cette confiance, pour que tu n'aies aucune crainte à me parler et que tu ne ressentes jamais le besoin de me dissimuler quoi que ce soit. J'ai essayé d'adapter mes réactions, de faire attention à mes paroles, de comprendre tes silences et de ne pas te brusquer lorsque tu avais du mal à t'exprimer. J'ai cherché à devenir une personne auprès de laquelle tu pourrais être entièrement honnête. Et malgré cela, j'avais toujours cette sensation de devoir réclamer ma place, de devoir insister pour obtenir des réponses et de devoir découvrir par moi même ce que tu ne voulais pas me dire. Tu ne comprends peut être pas à quel point cela peut faire mal de vouloir être aussi proche de quelqu'un tout en ayant constamment l'impression d'être tenue à distance. Je ne voulais pas connaître chaque détail de ton existence pour te surveiller ou t'empêcher de vivre. Je voulais simplement ne pas avoir à me demander si la personne qui partageait ma vie était en train de me cacher quelque chose. Je voulais pouvoir poser une question sans redouter la réponse, pouvoir te regarder sans me demander si je pouvais réellement croire ce que tu venais de me raconter. Je voulais retrouver cette tranquillité qui devrait exister lorsque l'on est auprès de quelqu'un que l'on aime.</p>
+
+        <div class="acte" aria-hidden="true"><img src="images/sceau-2.webp" alt=""></div>
+
+        <p>Pendant tout ce temps, moi aussi, j'avais peur. Chaque jour, chaque soir, cette inquiétude restait quelque part en moi. Je pouvais essayer de m'occuper, penser à autre chose, faire comme si tout allait bien, mais il suffisait parfois d'un silence, d'une réponse étrange ou d'une information que je découvrais pour que cette boule au ventre revienne immédiatement. Je me demandais ce que j'allais encore apprendre, ce que tu avais pu me cacher et à quel moment j'allais encore découvrir que mes inquiétudes étaient fondées. Je me retenais de pleurer parce que je ne voulais pas t'inquiéter davantage, je retenais ma colère parce que je ne voulais pas déclencher un nouveau conflit et je gardais mes questions pour moi parce que je redoutais les conséquences d'une nouvelle discussion. J'ai fini par prendre l'habitude de surveiller mes propres émotions, comme si je devais constamment faire attention à ne pas être trop triste, trop inquiète, trop insistante ou trop blessée. Même lorsque j'avais envie de craquer, je me disais qu'il fallait que je t'épargne cela. Même lorsque je n'en pouvais plus, je réfléchissais encore à ce que tu pourrais ressentir si je laissais enfin sortir tout ce que j'avais sur le cœur. Je me suis tellement préoccupée de ne pas empirer ta situation que j'ai fini par oublier que la mienne empirait chaque jour. Je ne te dis pas cela pour prétendre que tu n'as jamais souffert ou que tes propres difficultés n'avaient aucune importance. Je sais que tu pouvais avoir tes problèmes, tes peines et tes raisons. Mais est ce que tu as seulement imaginé un instant ce que je vivais pendant que j'essayais de faire attention à toi ? Est ce que tu as réalisé que, derrière mes silences et mes efforts pour préserver les choses, il y avait une personne qui avait elle aussi besoin d'être rassurée, écoutée et protégée ?</p>
+
+        <p>Pendant longtemps, je ne me suis même pas rendu compte du bonheur que j'avais. Je pensais que ce que je ressentais n'était qu'une simple satisfaction, quelque chose de normal, presque banal, qui faisait simplement partie de ma vie. Je ne réalisais pas forcément à quel point ces moments comptaient pour moi, à quel point j'étais heureuse de pouvoir partager tout cela avec toi. Je crois que je ne mesurais pas la valeur de ce bonheur parce que je pensais qu'il allait de soi, parce que j'imaginais que nous pourrions continuer à avancer et que les difficultés que nous traversions ne finiraient pas par tout engloutir. Mais depuis Kurei, j'ai eu l'impression que tout changeait progressivement. Ce qui était autrefois une source de bonheur est devenu une source d'angoisse. Notre relation a pris une tournure que je n'aurais jamais voulu connaître, jusqu'à devenir quelque chose de profondément toxique pour moi. J'étais devenue cette personne qu'il fallait préserver, cette prétendue perle rare qu'il ne fallait pas salir, mais dans les faits, je vivais chaque nouveau jour avec une boule au ventre. Je ne savais plus comment me comporter, quelles questions poser, quelles choses aborder ou au contraire garder pour moi. Je pouvais passer un moment heureux et, peu de temps après, être rattrapée par une nouvelle inquiétude. Je pouvais entendre tes paroles et avoir envie de les croire, tout en ayant au fond de moi la peur que la réalité soit encore différente. C'est terrible de ne plus parvenir à profiter pleinement des moments que l'on partage avec quelqu'un parce qu'une partie de soi reste constamment sur ses gardes. J'aurais voulu retrouver cette sensation de sécurité, cette simplicité que je croyais autrefois naturelle entre nous. J'aurais voulu pouvoir être heureuse sans avoir peur que ce bonheur soit suivi d'une nouvelle découverte, d'un nouveau mensonge ou d'une nouvelle déception.</p>
+
+        <p>Jusqu'au jour où je n'ai plus réussi à tenir. J'ai fini par fondre en larmes, sans parvenir à retenir davantage ce que je gardais en moi depuis si longtemps. Ce jour là, j'avais atteint le bout du bout. Ma vie était devenue plus que difficile à supporter et, malgré cela, je continuais encore à mettre énormément de choses de côté pour toi et pour Kurei. J'avais abandonné ou interrompu des choses qui m'appartenaient, j'avais mis mes propres projets, mes envies et une partie de ma vie au second plan pour essayer de préserver cette famille. Avant tout cela, j'avais également mon existence, mes objectifs, mes ambitions et la personne que j'étais en dehors de notre relation. J'étais simplement la fille de mon père, avec ma propre histoire et mon propre chemin à parcourir. Pourtant, j'avais choisi de consacrer une immense partie de moi même à ce que nous construisions. J'avais voulu être présente, j'avais voulu donner de mon temps et j'avais voulu faire passer notre bonheur avant certaines choses qui comptaient pourtant pour moi. Je ne regrette pas nécessairement d'avoir voulu aimer ou d'avoir voulu construire quelque chose avec toi, mais je ne peux pas nier que je me suis énormément oubliée au passage. Concernant Kurei, je ne vais pas prétendre avoir déjà développé envers lui l'attachement que j'ai pour toi. Je ne veux pas te mentir sur ce que je ressens. Mais cela ne signifie pas que je ne me sois jamais inquiétée pour lui, ni que je n'aie pas essayé de trouver ma place. Et ce jour là, alors que j'étais déjà au plus bas, j'ai encore voulu connaître la vérité. J'ai encore essayé de comprendre ce qui se passait, et j'ai découvert que tu m'avais menti une nouvelle fois. Ce qui aurait peut être été une déception de plus dans une autre période de ma vie m'a alors frappée d'une manière que je ne savais même plus expliquer. Je n'avais quasiment plus de force, plus de recul, plus cette capacité de prendre une nouvelle blessure et de la ranger quelque part en me disant que je m'en remettrais plus tard. J'ai malgré tout tout gardé en moi, parce que je ne voulais pas gâcher ce moment, parce que je ne voulais pas provoquer une nouvelle dispute et parce que je continuais encore à essayer de préserver quelque chose entre nous. Mais intérieurement, j'étais en train de m'effondrer.</p>
+
+        <p>Les conflits ont continué à s'accumuler et certaines de tes paroles m'ont plusieurs fois amenée à un point où je ne savais même plus comment réagir. Il m'arrivait de m'arrêter brusquement de répondre, de fuir une conversation ou de ne plus vouloir continuer une discussion, non pas parce que je n'avais rien à dire, mais parce que je savais que j'étais à deux doigts de craquer. Je sentais que je n'avais plus suffisamment de maîtrise sur mes émotions pour poursuivre sans finir par éclater. Je ne savais plus comment exprimer ma souffrance sans que la conversation ne devienne une nouvelle épreuve. Certaines phrases ont fini par rester dans ma tête, notamment ces « Tu es sûre, Kuroha ? », ces « Viens pas te plaindre » et ces « Prends soin de Kurei ». Peut être que pour toi, ces paroles avaient un autre sens, peut être que tu ne mesurais pas ce qu'elles provoquaient chez moi, mais moi, je les recevais alors que j'étais déjà épuisée, déjà inquiète et déjà blessée par tout ce qui s'était accumulé. Et à cela s'ajoutaient les menaces, les paroles concernant le fait de mettre fin à tes jours, les menaces de suicide et tous ces scénarios terribles que je finissais par imaginer malgré moi. Tu n'imagines probablement pas à quel point cela pouvait me terrifier. Même lorsque j'étais en colère contre toi, même lorsque je n'avais plus envie de te parler, même lorsque j'aurais voulu simplement m'éloigner pour respirer, je continuais à m'inquiéter pour ta vie. Je me retrouvais à ravaler mes propres paroles parce que je ne voulais pas prendre le risque d'aggraver les choses. Je gardais mes reproches, je retenais mes émotions et je finissais par faire passer ma peur de ce qui pourrait t'arriver avant ma propre souffrance. Je ne savais plus où s'arrêtait ma responsabilité et où commençait la tienne. J'avais l'impression de devoir porter quelque chose qui me dépassait, tout en essayant de ne pas laisser paraître à quel point cela me détruisait. Et pendant que je cherchais à éviter le pire pour toi, je ne voyais même plus comment éviter que le pire ne m'arrive à moi.</p>
+
+        <div class="acte" aria-hidden="true"><img src="images/sceau-3.webp" alt=""></div>
+
+        <p>Puis il y a eu cette goutte de trop. J'étais déjà au fond du gouffre, à un stade où j'avais presque perdu la capacité de croire que les choses pouvaient réellement s'améliorer. Pourtant, au milieu de toutes ces discussions et de toutes ces promesses auxquelles je continuais de vouloir croire, il me restait une petite branche à laquelle je m'accrochais désespérément. Je savais que je ne pouvais pas continuer éternellement de cette manière. Je savais que je devais essayer de reprendre ma vie, de retrouver un peu de tranquillité et de redevenir une personne qui ne vivait pas constamment dans l'attente d'une nouvelle blessure. Alors j'ai essayé de sortir de ce gouffre. J'ai essayé de reprendre mon souffle, de retrouver ce que j'avais abandonné et de me relever au lieu de continuer à me laisser sombrer petit à petit. Je ne dis pas que tout allait bien, loin de là. Il y avait encore des jours où mes pensées m'emmenaient dans des scénarios terribles, où je ressentais une douleur que je ne savais pas exprimer et où certaines paroles me traversaient l'esprit sans même correspondre à ce que je souhaitais réellement. Mais j'essayais. Pour une fois, j'essayais de faire quelque chose pour moi, de ne plus simplement subir et d'imaginer qu'un autre chemin était encore possible. Et lorsque j'ai commencé à chercher cette issue, j'ai eu le sentiment que tu faisais exactement l'inverse, comme si au moment même où j'essayais de remonter à la surface, tu m'avais jeté une nouvelle pierre pour me faire couler encore plus profondément. Tu as touché à l'une des seules portes qu'il me restait, à cette possibilité à laquelle j'essayais de m'accrocher pour retrouver un peu de vie en dehors de tout cela. Et je crois que tu ne comprendras jamais entièrement à quel point ce geste m'a atteinte, parce que ce n'était pas simplement une nouvelle déception, c'était comme si, alors que je venais enfin de trouver le courage de chercher une sortie, je me retrouvais une nouvelle fois face à quelque chose qui me poussait à renoncer.</p>
+
+        <p>Ce qui a véritablement créé cette fissure en moi, c'est qu'à travers toutes ces trahisons, je n'avais pourtant jamais cessé de te demander exactement la même chose. Après chaque prétendu changement, après chaque discussion où tu me promettais que les choses seraient différentes, je finissais toujours par te demander si tu avais quelque chose à me dire, si tu ne me cachais rien, si j'avais enfin toute la vérité. Et tu me répondais que non, que tu m'avais tout dit, que tu ne gâchais rien, que je pouvais te faire confiance. Alors que, parfois, je savais déjà que ce n'était pas vrai. Imagine un instant ce que cela pouvait me faire de te poser une question en espérant sincèrement que tu choisisses enfin de tout me dire, tout en ayant déjà cette peur au fond de moi que tu me répondes une nouvelle fois quelque chose qui ne correspondrait pas à la réalité. Je ne voulais pas avoir raison, je ne voulais pas découvrir que mes soupçons étaient fondés. Je voulais simplement que tu me prouves que je pouvais encore me tromper, que je pouvais encore te faire confiance et que tu n'étais pas en train de me cacher une nouvelle chose. Mais je finissais toujours par découvrir le contraire. Et malgré cela, je continuais à me raconter que ce serait la dernière fois. Je me persuadais que tu avais compris, que tu avais pris conscience de ce que cela me faisait et que les choses ne se reproduiraient plus. Jusqu'à ce jour où tu m'as menti droit dans les yeux alors que j'étais déjà dans l'un des états les plus bas de ma vie. À cet instant, j'ai eu l'impression que tu me crachais littéralement dessus. Ce n'était plus une simple blessure que j'allais pouvoir dissimuler derrière un sourire, ni une nouvelle déception que j'allais pouvoir justifier en me disant que tu traversais une mauvaise période. J'en pouvais tout simplement plus. J'avais le sentiment que tu m'avais détruite à force de me faire vivre les mêmes choses, encore et encore, alors que je ne demandais qu'une seule chose depuis le début, la vérité. Je ne voulais pas que tu sois irréprochable, je voulais que tu sois honnête avec moi. Et je crois que c'est cette différence que tu n'as jamais réellement comprise.</p>
+
+        <p>J'ai parfois eu l'impression que ton objectif était simplement de me garder auprès de toi, comme une œuvre d'art ou un objet de collection que l'on accroche à un mur, que l'on préserve et que l'on regarde, sans jamais réellement se demander ce qu'il ressent. Comme si ma présence suffisait, comme si le simple fait que je reste à tes côtés était tout ce qui comptait, sans que tu aies réellement besoin de me donner la confiance, la transparence et la place que je demandais. Mais je ne suis pas un objet que l'on conserve pour se rassurer de ne pas l'avoir perdu. Je ne suis pas une personne que l'on peut garder près de soi tout en lui refusant la vérité, en attendant d'elle qu'elle comprenne, qu'elle pardonne et qu'elle continue à rester quoi qu'il arrive. Je voulais être aimée, considérée et respectée. Je voulais sentir que ma présence avait une place réelle dans ta vie, que mes inquiétudes comptaient autant que les tiennes et que ma confiance était quelque chose dont tu prenais soin. Je voulais pouvoir être ta femme sans avoir l'impression de devoir constamment me battre pour obtenir le droit de savoir ce qui se passait réellement. Et pourtant, à force de chercher à préserver notre relation, j'ai eu l'impression de devenir la seule personne qui se battait encore pour qu'elle ne s'effondre pas. Même lorsque je n'en pouvais plus, j'essayais encore de trouver une solution, de comprendre, de discuter et de laisser une dernière possibilité aux choses. Mais combien de dernières possibilités peut on donner à quelqu'un avant de ne plus avoir la moindre possibilité à se donner à soi même ?</p>
+
+        <p>Même lorsque j'étais arrivée à un stade où je ne pouvais presque plus supporter cette situation, une seule personne est finalement venue essayer de régler les choses, ton propre fils, Kurei. Et ce qui m'a encore davantage blessée, c'est de constater que tu as été capable de l'ignorer lorsqu'il t'a simplement souhaité bonne nuit, avant de continuer à me mentir en inventant une réponse que tu ne lui avais pas donnée. Tu as même été capable de mentir sur quelque chose qui concernait ton propre fils, alors qu'il essayait simplement de t'aider. Ce n'était plus seulement une nouvelle information que tu me cachais ou une nouvelle vérité que je découvrais par quelqu'un d'autre. C'était une situation dans laquelle même Kurei, qui avait essayé d'intervenir à sa manière, se retrouvait mêlé à quelque chose qui aurait dû être entre nous. Je ne savais même plus quoi penser. Je me demandais comment nous avions pu en arriver là, comment une chose aussi simple qu'un échange honnête avait pu devenir aussi compliquée, et comment nous avions pu laisser une situation pareille prendre autant de place dans notre vie. J'avais essayé de préserver notre relation, mais je ne voulais pas que Kurei ait à porter le poids de nos problèmes ou à se retrouver au milieu de nos mensonges et de nos conflits. Il n'aurait jamais dû avoir à essayer de réparer quelque chose que nous étions censés être capables de régler nous mêmes. Et pourtant, même après cela, je continuais encore à chercher une explication, parce que je ne parvenais pas à accepter que tout ce que j'avais essayé de préserver puisse se retrouver dans une telle situation.</p>
+
+        <p>Malgré tout, même après cette nouvelle blessure, je continuais à m'inquiéter pour toi. C'est peut être l'une des choses qui me font le plus mal lorsque je repense à tout cela, constater que, même lorsque j'étais moi même complètement détruite, une partie de moi continuait à avoir peur qu'il t'arrive quelque chose. Malgré les menaces, malgré les paroles que j'avais dû entendre et malgré tout ce que je ressentais à ton égard, je n'arrivais pas simplement à cesser de m'inquiéter. J'avais peur du pire. Je me demandais ce qui pourrait arriver si tu passais réellement à l'acte, je me faisais des scénarios que je ne voulais même pas imaginer et je finissais par me retrouver dans un état que je n'arrivais plus à contrôler. Je ne savais plus comment réagir, ni quoi te dire, ni comment te faire comprendre que moi aussi j'étais en train de m'effondrer. Et un jour, j'ai fini par pleurer devant Kurei. Pas simplement quelques larmes que j'aurais pu essuyer rapidement en prétendant que tout allait bien, mais une véritable détresse que je n'arrivais plus à cacher. Je me suis retrouvée devant lui dans un état plus que lamentable, à m'excuser d'être une mère aussi ingrate, à lui dire qu'il méritait bien mieux qu'une mère telle que moi. Je lui ai demandé pardon de ne peut être jamais réussir à devenir la bonne mère qu'il aurait mérité d'avoir, de ne pas être capable de lui offrir l'enfance qu'il aurait voulu connaître et de ne pas toujours être à la hauteur de ce dont il pouvait avoir besoin. Je me suis retrouvée à lui faire porter, ne serait ce que par mes paroles, des excuses pour une situation qui n'aurait jamais dû le conduire à me voir ainsi. Et malgré tout, je lui ai demandé de faire de son mieux, de continuer à avancer, de ne pas abandonner ses rêves et de donner le maximum de lui même pour devenir la personne qu'il souhaitait réellement devenir. Je voulais qu'il puisse avoir son propre avenir, qu'il puisse être heureux et qu'il ne laisse jamais ce que nous traversions déterminer la personne qu'il deviendrait. Même si je ne savais plus si j'étais capable d'être une bonne mère, je voulais au moins qu'il ait toutes les chances de devenir ce qu'il désirait. Je ne voulais pas qu'il se sente responsable de ma tristesse, ni qu'il pense devoir me réparer ou me consoler. Mais tu te rends compte de ce que cela représente pour moi ? J'en étais arrivée à pleurer devant mon propre fils, à m'excuser auprès de lui d'être sa mère, à lui dire qu'il méritait mieux que ce que je pensais pouvoir lui donner. Je ne me reconnaissais même plus. Moi qui avais essayé de protéger cette famille, moi qui avais mis tellement de choses de côté pour vous, je me retrouvais à ne même plus parvenir à me considérer comme une mère à la hauteur. Et c'est là que j'ai atteint mon véritable seuil de non retour. Ce n'était plus seulement notre relation qui me faisait souffrir, cette situation avait fini par atteindre l'image que j'avais de moi même, ma confiance, ma dignité et jusqu'à la manière dont je me percevais en tant que mère.</p>
+
+        <div class="acte" aria-hidden="true"><img src="images/sceau-4.webp" alt=""></div>
+
+        <p>Voilà ce que je ne parviens plus à oublier. Ce n'est pas simplement une dispute, ni une mauvaise période, ni un désaccord qui aurait pris des proportions trop importantes. C'est une accumulation de choses que j'ai encaissées pendant beaucoup trop longtemps, de nuits où j'ai gardé mes inquiétudes pour moi, de discussions durant lesquelles j'ai retenu mes larmes, de vérités que j'ai découvertes ailleurs et de promesses auxquelles j'ai voulu croire malgré tout. J'ai eu tellement de patience que j'ai fini par croire que je devais en avoir encore davantage. J'ai pardonné tellement de fois que j'ai fini par considérer le pardon comme une obligation. J'ai tellement cherché à comprendre tes raisons que j'ai fini par ne plus prendre le temps de comprendre ma propre souffrance. Chaque fois que quelque chose se brisait, je ramassais les morceaux et j'essayais de les remettre en place, même lorsque je savais que je ne pouvais pas réparer cela toute seule. Je me disais que si je faisais encore un effort, si je choisissais encore mes mots avec précaution, si je me montrais encore plus compréhensive, peut être que cette fois nous y arriverions. Mais j'ai fini par comprendre que je ne pouvais pas être la seule à porter cette relation. Je ne pouvais pas continuer à sacrifier ma tranquillité pour préserver un bonheur qui me semblait chaque jour un peu plus inaccessible. Je ne pouvais pas continuer à me faire passer après tout le monde en espérant qu'un jour quelqu'un finirait par remarquer que moi aussi, j'avais besoin qu'on prenne soin de moi. Et je crois que c'est ce qui me fait le plus mal, je n'avais jamais voulu demander grand chose. Je voulais simplement que tu me parles, que tu me dises la vérité et que je puisse être auprès de toi sans avoir peur de ce que j'allais encore découvrir.</p>
+
+        <p>Cela fait bien trop longtemps que je prends sur moi. Bien trop longtemps que je garde le silence. Bien trop longtemps que je me mens à moi même en me répétant, après chaque trahison, que c'était la dernière fois, que les paroles que tu me donnais étaient sincères et que les choses finiraient par changer. J'ai passé tellement de temps à essayer de comprendre, à essayer de pardonner et à essayer de trouver une raison de continuer que j'ai fini par oublier que j'avais également le droit d'être heureuse. J'avais le droit de ne pas avoir peur, le droit de poser une question sans redouter la réponse, le droit de ne pas devoir constamment vérifier les paroles de la personne que j'aimais. J'avais le droit d'être aimée sans avoir à supplier pour obtenir cette honnêteté qui aurait dû être naturelle. J'ai tellement voulu te donner toutes les chances de changer que je ne me suis jamais réellement demandé combien de chances il me restait à moi. Et aujourd'hui, je regarde tout ce que j'ai accepté, tout ce que j'ai pardonné et toutes les fois où je me suis convaincue que les choses allaient s'arranger, et je ne sais même plus comment j'ai pu trouver autant de force pour continuer. Ce n'est pas parce que je n'ai jamais souffert que j'ai tenu aussi longtemps. C'est justement parce que je souffrais et que je voulais encore croire qu'il y avait quelque chose à sauver que je continuais à me battre.</p>
+
+        <p>Mais non. Même me persuader moi même, je n'en ai désormais plus la force. C'est comme si quelque chose en moi refusait tout simplement de continuer à y croire. Mon corps et mon esprit ne suivent plus. Je ne parviens plus à entendre tes paroles sans repenser à tout ce qui les a précédées, je ne parviens plus à recevoir une promesse sans me demander combien de temps elle tiendra, et je ne parviens plus à accepter une explication sans avoir peur de découvrir ensuite qu'il me manquait encore une partie de la vérité. Je n'ai même plus envie de devoir réclamer ce qui aurait dû être donné naturellement. Je ne veux plus passer mes journées avec cette boule au ventre, ni mes soirées à retenir mes larmes pour éviter un nouveau conflit. Je ne veux plus devoir choisir entre exprimer ce que je ressens et avoir peur de ce qui pourrait arriver ensuite. Je ne veux plus me retrouver à inventer des excuses à ta place simplement pour réussir à supporter ce que je découvre. Et je ne veux plus me regarder dans un miroir en me demandant comment j'ai pu en arriver à ne plus avoir confiance en mon propre jugement. Je ne te dis pas cela pour te faire porter artificiellement toute ma souffrance, ni pour prétendre que je n'ai jamais commis d'erreurs. Je sais que je ne suis pas parfaite, je sais que j'ai mes défauts et je sais que certaines choses auraient pu être différentes de mon côté également. Mais je ne peux plus continuer à faire comme si tout cela n'avait pas laissé de traces.</p>
+
+        <p>Et finalement, moi qui ai toujours affirmé ne pas regretter ce que je suis devenue, je crois que les choses ont profondément changé. Aujourd'hui, je regrette la Kuroha que j'étais autrefois, mais pas nécessairement pour les raisons que l'on pourrait imaginer. Ce qui me fait le plus mal, c'est de réaliser que cette ancienne Kuroha, celle qui n'était finalement rien de plus que l'outil de son père, ne souffrait peut être pas autant que celle que je suis devenue. C'est une chose terrible à reconnaître, parce que je sais parfaitement quelle était mon existence à cette époque. Je n'avais pas réellement de liberté, je ne choisissais pas ma propre voie et mon existence était entièrement guidée par les volontés de mon père. J'étais une soldate, un instrument façonné pour exécuter des ordres, sans avoir à me poser de questions sur ce que je voulais réellement. Je n'avais pas à chercher ma place ailleurs, je n'avais pas à construire une vie dont je ne savais pas si elle allait me rendre heureuse et je n'avais pas à me demander si les personnes auxquelles j'accordais ma confiance me disaient la vérité. Tout était défini. Je savais ce que l'on attendait de moi, je connaissais mon rôle et je n'avais pas à réfléchir à ce que je pouvais espérer de l'avenir. Peut être que cette existence était dépourvue de liberté, peut être qu'elle était froide et qu'elle ne laissait aucune place à mes propres envies, mais au moins, je savais où me tenir. Je n'avais pas toutes ces inquiétudes qui m'accompagnent aujourd'hui, pas cette peur constante de découvrir que l'on m'avait encore menti, pas cette impression de devoir me battre pour obtenir une place dans la vie de quelqu'un. Et le plus douloureux, c'est de me dire que j'étais peut être plus heureuse ainsi. Pas parce que j'étais réellement libre ou épanouie, mais parce que je ne portais pas toutes ces blessures que j'ai accumulées depuis que j'ai voulu vivre autrement.</p>
+
+        <p>J'ai voulu être autre chose que l'arme de mon père. J'ai voulu découvrir ce que cela pouvait faire de choisir par moi même, d'aimer quelqu'un, de construire une relation et d'avoir une existence qui ne se résumait pas aux ordres que l'on me donnait. J'ai voulu croire que je pouvais devenir une personne à part entière, que je pouvais avoir des sentiments, des envies et des projets qui m'appartenaient. Je voulais découvrir autre chose que la discipline, l'obéissance et cette existence dans laquelle chaque décision était prise à ma place. Je pensais qu'en sortant de ce rôle, je pourrais enfin trouver quelque chose qui me rendrait heureuse. Je pensais que cette liberté aurait un sens, que tous les efforts que je ferais pour construire ma propre vie finiraient par m'apporter cette tranquillité que je n'avais jamais vraiment connue. Mais aujourd'hui, je regarde le chemin parcouru et je me demande ce que j'ai réellement gagné. J'ai appris à aimer, mais j'ai aussi appris ce que cela faisait de souffrir à cause de la personne que l'on aime. J'ai appris à faire confiance, mais j'ai surtout appris à douter de chacune des paroles que l'on m'adresse. J'ai voulu construire quelque chose, mais j'ai fini par avoir peur de voir cette construction s'effondrer chaque fois que je découvrais une nouvelle chose que l'on m'avait cachée. Et je me retrouve aujourd'hui à regretter cette ancienne existence que j'aurais autrefois voulu quitter à tout prix.</p>
+
+        <p>Je ne dis pas que mon père m'offrait une vie heureuse au sens où les autres pourraient l'entendre. Je ne dis pas non plus que je souhaite nécessairement redevenir l'instrument qu'il avait façonné, sans volonté propre et sans possibilité de choisir mon avenir. Mais il y avait dans cette ancienne existence une forme de simplicité que je n'arrive plus à retrouver. Je savais qui j'étais, je savais ce que j'avais à faire et je n'attendais pas de quelqu'un qu'il me donne une vérité qu'il ne voulait pas me donner. Je n'avais pas à espérer chaque jour que l'on me parle honnêtement, ni à me demander si les promesses que l'on me faisait étaient sincères. Je n'avais pas construit tout cet espoir autour d'une personne dont les paroles finiraient par me faire autant souffrir. Peut être que je ne connaissais pas le bonheur de la même manière, mais je connaissais au moins une forme de stabilité. Et aujourd'hui, je suis presque capable d'envier celle que j'étais alors. C'est assez ironique de penser que la femme qui a voulu sortir de cette existence pour trouver sa propre voie en vient désormais à regretter la tranquillité qu'elle avait lorsqu'elle n'était qu'un outil entre les mains de son père. Je pensais que devenir libre me permettrait de devenir heureuse, et je découvre que cette liberté m'a aussi confrontée à des blessures que je ne savais pas porter.</p>
+
+        <p>Parfois, je me demande même si je n'aurais pas été mieux en restant auprès de mon père, en continuant à suivre le chemin qu'il avait tracé pour moi, plutôt que de me retrouver aujourd'hui aussi loin de lui et aussi éloignée de la personne que j'étais. Peut être aurais je été plus proche de lui, plus fidèle à cette existence qu'il m'avait donnée et, d'une certaine manière, moins perdue que je ne le suis actuellement. Je ne sais pas si cette pensée est juste, je ne sais pas si j'idéalise une époque qui avait elle aussi ses propres difficultés, mais c'est ce que je ressens aujourd'hui. Il m'arrive de regarder l'ancienne Kuroha et de me demander si elle aurait seulement compris ce que je suis devenue. Est ce qu'elle aurait reconnu cette femme qui s'inquiète chaque soir, qui retient ses larmes, qui cherche des explications et qui finit par s'excuser d'être une mère qui ne se sent plus à la hauteur ? Est ce qu'elle aurait compris pourquoi j'ai accepté autant de choses, pourquoi j'ai autant donné et pourquoi j'ai laissé quelqu'un prendre une place aussi importante dans mon existence au point de finir par me perdre ? J'ai parfois l'impression que cette ancienne Kuroha aurait trouvé ma situation incompréhensible, peut être même qu'elle aurait considéré que je m'étais affaiblie au point de ne plus être capable de me reconnaître. Et cette pensée me fait mal, parce que je sais que j'ai voulu devenir quelqu'un de différent, mais je ne pensais pas que cela me conduirait à regretter à ce point la personne que j'étais avant.</p>
+
+        <p>Ce que je regrette finalement, ce n'est pas simplement d'avoir quitté le chemin de mon père. C'est d'avoir perdu cette certitude que j'avais autrefois, cette identité que je connaissais parfaitement, même si elle ne m'appartenait pas entièrement. C'est de m'être éloignée de ce qui me définissait pour essayer de construire quelque chose qui m'a finalement fait oublier qui j'étais. Je pensais découvrir une autre forme de bonheur, mais je me retrouve à regarder mon ancienne vie avec une nostalgie que je n'aurais jamais imaginé ressentir. Et je crois que c'est peut être cela qui me détruit le plus, me dire que je n'étais peut être pas aussi malheureuse que je le pensais à l'époque, que j'étais peut être même plus en paix lorsque je n'étais qu'un outil de mon père que maintenant que j'ai essayé de devenir une femme libre, capable d'aimer et de choisir. Je ne sais plus si je dois regretter mes décisions ou simplement accepter que certaines choses m'ont changée au delà de ce que j'aurais pu imaginer. Mais je sais que je ne reconnais plus entièrement cette personne que je suis devenue.</p>
+
+        <div class="acte" aria-hidden="true"><img src="images/sceau-5.webp" alt=""></div>
+
+        <p>Je ne sais pas si tu comprendras un jour à quel point j'ai voulu que les choses fonctionnent. Je ne sais pas si tu mesureras le nombre de fois où j'ai choisi de croire en toi alors que j'avais toutes les raisons de douter, ni combien de fois j'ai retenu mes larmes simplement pour ne pas nous faire sombrer davantage. Mais je sais que je ne peux plus continuer à te promettre que tout ira bien alors que je ne vais moi même plus bien. Je ne peux plus te donner une nouvelle chance simplement parce que tes paroles me rappellent ce que j'ai toujours voulu entendre. Je ne peux plus faire semblant d'avoir cette confiance que j'ai passé tant de temps à essayer de préserver. Aujourd'hui, je suis épuisée, profondément blessée et incapable de retrouver cette personne que j'étais avant tout cela. Et si je décide enfin de m'arrêter, ce n'est pas parce que tout ce que nous avons vécu ne représentait rien pour moi. C'est justement parce que cela a représenté énormément que je me suis battue aussi longtemps.</p>
+
+        <p>J'aurais simplement voulu que tu comprennes plus tôt que derrière mes questions, il n'y avait pas une envie de te contrôler, mais une peur de te perdre et de découvrir encore une fois que la personne à laquelle je donnais toute ma confiance me cachait une partie de la vérité. Derrière mes silences, il n'y avait pas de l'indifférence, mais une fatigue que je ne savais plus comment exprimer. Derrière mes moments de recul, il n'y avait pas nécessairement une volonté de m'éloigner de toi, mais une tentative désespérée de ne pas m'effondrer. Et derrière toutes ces fois où je t'ai demandé si tu avais quelque chose à me dire, il y avait simplement une femme qui espérait, encore et encore, que son mari choisirait enfin de lui parler honnêtement.</p>
+
+        <p>Je voulais être ta femme, Shinkiri. Pas ton inconnue, pas une personne que l'on garde à distance, pas quelqu'un qui doit apprendre à vivre avec les mensonges sous prétexte qu'elle aime trop pour partir. Je voulais être celle avec qui tu pouvais tout partager, celle auprès de laquelle tu n'avais pas besoin de dissimuler tes difficultés, celle qui pouvait entendre tes vérités sans avoir à les découvrir ailleurs. Je voulais que nous puissions être imparfaits ensemble, mais honnêtes. Je voulais que nous puissions traverser des épreuves sans que chaque difficulté devienne une nouvelle fissure dans la confiance que nous avions construite. Je voulais simplement que nous soyons un couple, une famille, deux personnes capables de se parler même lorsque les choses étaient difficiles. Et je crois que c'est cette version de notre histoire que je vais avoir le plus de mal à abandonner, celle que j'ai toujours espéré vivre, celle pour laquelle j'ai fait autant d'efforts et que j'ai continué à imaginer malgré tout ce qui venait la contredire.</p>
+
+        <p>Je ne te demande même plus de trouver les mots parfaits pour me répondre. Je ne veux plus d'une nouvelle promesse, d'un nouveau discours ou d'une nouvelle explication qui me permettrait de tenir quelques jours de plus. Je voulais la vérité lorsque j'étais encore capable de l'entendre, lorsque j'avais encore suffisamment de confiance pour te croire et lorsque j'avais encore assez de force pour essayer de réparer les choses avec toi. Aujourd'hui, je ne sais plus quoi faire de tes paroles. Je ne sais plus comment les recevoir ni comment leur donner une place dans mon cœur sans repenser à tout ce que j'ai traversé. Et c'est peut être cela qui me fait le plus mal, avoir tellement aimé l'idée de pouvoir tout te dire et avoir fini par ne même plus savoir comment te parler de ce que je ressens.</p>
+
+        <p>Je suis fatiguée, Shinkiri. Pas simplement fatiguée d'une dispute ou d'une mauvaise journée. Fatiguée d'avoir eu peur, fatiguée d'avoir douté, fatiguée d'avoir attendu, fatiguée d'avoir pleuré en silence et surtout fatiguée de m'être convaincue qu'il fallait toujours trouver une raison de continuer à supporter ce qui me faisait du mal. Je voulais que nous soyons heureux. Je voulais que Kurei puisse avancer et devenir la personne qu'il souhaite être. Je voulais que tu puisses être heureux également. Mais j'aurais aussi voulu, pour une fois, ne pas avoir à disparaître derrière le bonheur de tout le monde. J'aurais voulu que quelqu'un remarque que j'avais moi aussi besoin d'être rassurée, que j'avais moi aussi besoin qu'on me tende la main et que je n'étais pas aussi forte que je tentais de le faire croire.</p>
+
+        <p>Alors, si aujourd'hui tu as l'impression que je renonce à tout, comprends au moins que je n'en suis pas arrivée là du jour au lendemain. Je ne me suis pas réveillée un matin en décidant que plus rien ne comptait. J'y suis arrivée après des dizaines de discussions, des centaines de doutes, des promesses auxquelles j'ai voulu croire et des blessures que j'ai essayé de pardonner. J'y suis arrivée après avoir donné une partie de moi même pour préserver quelque chose qui comptait énormément à mes yeux. Et maintenant, je dois essayer de retrouver cette partie de moi que j'ai laissée derrière chaque fois que j'ai choisi de me taire pour que les choses ne s'effondrent pas.</p>
+
+        <p>Je ne sais pas ce que l'avenir nous réserve, mais je sais que je ne peux plus continuer à vivre comme si tout allait bien. Je ne peux plus être celle qui trouve toujours une dernière raison de croire, une dernière explication à accepter et une dernière promesse à laquelle se raccrocher. Cette fois, je veux simplement arrêter de me mentir. Je veux pouvoir respirer sans cette boule au ventre, dormir sans cette inquiétude et vivre sans avoir constamment peur de découvrir une nouvelle vérité. Je voulais être heureuse avec toi, et je crois que c'est ce qui rend tout cela aussi douloureux, je ne suis pas en train de renoncer à quelque chose que je n'ai jamais voulu. Je suis en train de renoncer à quelque chose que j'ai voulu de toutes mes forces, quelque chose pour lequel je me suis battue jusqu'à ne presque plus rien avoir à donner.</p>
+
+        <p>Et malgré tout ce que je viens de te dire, malgré ma colère, ma déception et cette fatigue que je ne sais même plus comment exprimer, je ne peux pas prétendre que tout cela ne me fait rien. Si je n'avais rien ressenti, je n'aurais jamais passé autant de temps à essayer de comprendre. Si tu ne comptais pas pour moi, je ne me serais jamais inquiétée autant, je n'aurais jamais autant espéré et je n'aurais jamais autant souffert de découvrir que tes paroles ne correspondaient pas à la réalité. C'est justement parce que tu as compté, parce que j'ai voulu croire en toi et parce que j'ai voulu construire ma vie à tes côtés que tout cela a fini par laisser une trace aussi profonde. Mais je ne peux plus continuer à confondre l'amour que je te porte avec l'obligation de tout supporter. Je ne peux plus me perdre pour prouver que je suis capable de rester. Et aujourd'hui, même si une partie de moi aurait encore voulu que les choses soient différentes, je dois enfin reconnaître que je n'ai plus la force de continuer à me battre de cette manière.</p>
+
+        <p>Je voulais simplement que tu me dises la vérité. C'est tout ce que j'ai demandé. Et quelque part, c'est peut être ce qui me fera le plus mal pendant longtemps, me dire qu'après tout ce que j'ai donné, après toutes ces années, après toutes ces fois où j'ai choisi de croire en toi, la chose que je désirais le plus était aussi celle que je n'ai jamais réussi à obtenir durablement. J'aurais voulu que tu comprennes que je n'avais pas besoin d'une vie parfaite, seulement d'une vie dans laquelle je n'aurais pas à douter constamment de la personne que j'aime. J'aurais voulu que tu comprennes que je ne te demandais pas de ne jamais tomber, mais simplement de ne pas me laisser découvrir seule que tu étais tombé. J'aurais voulu pouvoir être à tes côtés sans devoir constamment me demander si tu me laissais réellement entrer dans ta vie.</p>
+
+        <p>Aujourd'hui, je n'ai plus cette force. Et je crois que, pour la première fois depuis très longtemps, je vais devoir arrêter d'essayer de convaincre mon propre cœur que tout va bien. Parce que ce n'est pas le cas. Je ne vais plus bien depuis longtemps, Shinkiri, et je n'ai désormais même plus la force de prétendre le contraire.</p>
+
+        <p>Mais malheureusement, tu as choisi de faire exactement l'inverse. Là où tu m'avais appris à vivre autrement, tu as commencé à me détruire petit à petit. Pas en une seule fois. Peut être que cela aurait été plus simple si tout s'était effondré d'un seul coup. Mais non. Jour après jour, mensonge après mensonge, déception après déception, tu as fini par retirer une à une toutes les raisons que j'avais de continuer à croire en cette Kuroha que tu avais contribué à faire naître.</p>
+
+        <p>À chaque fois, j'ai essayé de comprendre. À chaque fois, j'ai cherché des excuses à ta place. Je me suis répétée que tu avais certainement tes raisons, que tu ne me mentais peut être pas pour me faire du mal, que les choses finiraient par changer. J'ai passé tellement de temps à essayer de protéger l'image que j'avais de toi, même lorsque toi même tu étais en train de la détruire. Et pendant que je m'efforçais de sauver ce que nous étions, je ne me suis même pas rendu compte que je disparaissais progressivement avec tout le reste.</p>
+
+        <p>Tu m'avais appris à baisser mes armes, Shinkiri. Tu m'avais appris qu'il existait autre chose que les ordres, le devoir et l'obéissance. Tu m'avais fait croire que je pouvais enfin déposer cette armure que j'avais portée toute ma vie. Et une fois que je l'ai fait, une fois que je t'ai laissé entrer suffisamment loin pour voir qui j'étais réellement, tu as fini par frapper exactement là où je n'avais plus aucune protection.</p>
+
+        <p>Alors oui… tu m'as changée. Mais peut être que ce qui me fait le plus mal, c'est de réaliser aujourd'hui que tu as fini par détruire bien plus que ce que tu avais essayé de sauver. Tu ne m'as pas simplement ramenée à la Kuroha que j'étais autrefois. Tu as réussi à briser celle que j'aurais pu continuer à devenir. Tu m'as fait découvrir une vie que je n'aurais jamais imaginé pouvoir aimer, pour finalement me laisser avec le souvenir de tout ce que j'avais réussi à avoir avant de le voir disparaître entre mes mains.</p>
+
+        <p>Et parfois, je me demande si cela en valait réellement la peine. Si découvrir ce bonheur, même pendant un instant, valait le prix de devoir ressentir aujourd'hui son absence. Si apprendre à aimer valait réellement la peine lorsque la personne à qui j'avais donné cette confiance a fini par me faire regretter de l'avoir fait.</p>
+      </article>
+    </div>
+    <div class="brocart bas">
+      <article class="feuille">
+        <p>Parce qu'au fond, si j'étais restée celle que mon père avait façonnée, je n'aurais peut être jamais connu ce bonheur… mais je n'aurais jamais eu à assister à sa destruction non plus. Je serais restée cette soldate. Froide. Silencieuse. Incapable de réellement comprendre ce que je perdais, parce que je n'aurais jamais eu la chance de le connaître.</p>
+
+        <p>Et c'est peut être cela qui me fait le plus mal aujourd'hui.</p>
+
+        <p>Ce n'est pas seulement que tu m'as menti. Ce n'est pas seulement que tu m'as trahie. C'est que tu as réussi à me faire aimer une version de moi même que je n'aurais jamais voulu perdre… avant de devenir la raison pour laquelle je dois maintenant lui dire adieu.</p>
+
+        <div id="inacheve">
+          <p class="fragment" id="fragment">Et malgré tout ce que je ressens encore, malgré tout ce que j'ai essayé de sauver, malgré tout ce que j'aurais voulu croire jusqu'au dernier moment… je crois qu'une partie de moi aurait peut être préféré ne jamais te...</p>
+          <div class="vide" aria-hidden="true">
+            <img id="trainee" src="images/trait.webp" alt="">
+            <img class="goutte" src="images/goutte.webp" alt="">
+            <img class="fude" src="images/pinceau.webp" alt="">
+            <img class="sceau-fin" src="images/sceau-kuroha.webp" alt="">
+          </div>
+        </div>
+      </article>
+      <img class="bord" src="images/dechirure-bord.webp" alt="" aria-hidden="true">
+    </div>
+    <img id="higanbana" src="images/higanbana.webp" alt="" aria-hidden="true">
+  </div>
+</main>
+
+<aside id="lecteur" class="plaque" aria-label="Musique">
+  <div class="barres" aria-hidden="true"><b></b><b></b><b></b></div>
+  <div class="infos" id="infos" aria-live="polite"><strong id="titre">—</strong><span>Mélancolie</span></div>
+  <input id="volume" type="range" min="0" max="100" value="13" aria-label="Volume de la musique">
+  <button id="son" type="button" aria-pressed="false" aria-label="Couper la musique" title="Couper la musique"></button>
+</aside>
+
+<script>
+const PISTES = [
+  { titre: 'Let You Down',    fichier: 'musique/let-you-down.mp3' },
+  { titre: 'Call of Silence', fichier: 'musique/call-of-silence.mp3' },
+  { titre: 'Nameless Tragedy', fichier: 'musique/nameless-tragedy.mp3' }
+];
+let VOLUME = 0.13;
+
+const reduit = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $ = s => document.querySelector(s);
+const hasardDe = s => () => (s = (s * 1664525 + 1013904223) % 4294967296) / 4294967296;
+
+const paragraphes = [...document.querySelectorAll('.feuille p:not(.fragment)')];
+paragraphes.forEach(p => {
+  p.textContent = p.textContent
+    .replace(/'/g, '’')
+    .replace(/ ([?!:;»])/g, ' $1')
+    .replace(/« /g, '« ');
+});
+
+function animerPetales() {
+  const toile = $('#petales'), c = toile.getContext('2d');
+  const dpr = Math.min(devicePixelRatio || 1, 2);
+  let W = 0, H = 0;
+  const regler = () => { W = innerWidth; H = innerHeight; toile.width = W * dpr; toile.height = H * dpr; c.setTransform(dpr, 0, 0, dpr, 0, 0); };
+  regler(); addEventListener('resize', regler);
+  const nb = W < 640 ? 26 : 54;
+  const COULEURS = ['#cdb9f2', '#a88be0', '#8b6fc4', '#e7dcfa'];
+  const pluie = Array.from({ length: nb }, (_, i) => ({
+    x: Math.random(), y: Math.random(),
+    taille: 2.4 + Math.random() * 3.2,
+    chute: 0.3 + Math.random() * 0.6,
+    phase: Math.random() * 6.3, rythme: 0.3 + Math.random() * 0.6,
+    couleur: COULEURS[i % COULEURS.length]
+  }));
+  function dessiner(temps) {
+    c.clearRect(0, 0, W, H);
+    const s = temps / 1000;
+    pluie.forEach(p => {
+      if (!reduit) {
+        p.y += p.chute / H;
+        p.x += (Math.sin(s * p.rythme + p.phase) * 0.45 + 0.16) / W;
+        if (p.y * H > H + 50) { p.y = -50 / H; p.x = Math.random(); }
+        if (p.x > 1.04) p.x = -0.04;
+      }
+      const a = s * p.rythme + p.phase;
+      c.save();
+      c.translate(p.x * W, p.y * H);
+      c.rotate(a * 1.4);
+      c.scale(1, Math.max(.22, Math.abs(Math.cos(a * 1.7))));
+      c.globalAlpha = .82; c.fillStyle = p.couleur;
+      c.beginPath(); c.ellipse(0, 0, p.taille, p.taille * .68, 0, 0, 6.3); c.fill();
+      c.restore();
+    });
+    if (!reduit) requestAnimationFrame(dessiner);
+  }
+  requestAnimationFrame(dessiner);
+}
+
+function alignerTextures() {
+  const haut = $('.brocart'), bas = $('.brocart.bas');
+  bas.style.backgroundPosition = '0 ' + -(haut.offsetHeight % 150) + 'px';
+  $('.bas .feuille').style.backgroundPosition = '0 ' + -($('.feuille').offsetHeight % 760) + 'px';
+}
+addEventListener('resize', alignerTextures);
+
+function poserLarmes() {
+  const feuille = $('.feuille'), hauteur = feuille.offsetHeight, alea = hasardDe(2711);
+  const coin = () => 42 + alea() * 16;
+  for (let i = 0; i < 30; i++) {
+    const t = document.createElement('span'), d = 34 + alea() * 88;
+    t.className = 'larme';
+    t.style.cssText = 'width:' + d + 'px;height:' + d * (.82 + alea() * .3) + 'px;left:' + alea() * 92 + '%;top:' +
+      Math.pow(alea(), .62) * (hauteur - 140) + 'px;border-radius:' + coin() + '% ' + coin() + '% ' + coin() + '% ' + coin() + '%';
+    feuille.prepend(t);
+  }
+}
+
+const sons = { pistes: [], actif: -1, muet: false, fin: false };
+function fondre(el, cible, ms, apres) {
+  clearInterval(el.fonduEnCours);
+  const depart = el.volume, t0 = performance.now();
+  el.fonduEnCours = setInterval(() => {
+    const k = Math.min(1, (performance.now() - t0) / ms);
+    el.volume = depart + (cible - depart) * k;
+    if (k === 1) { clearInterval(el.fonduEnCours); if (apres) apres(); }
+  }, 40);
+}
+function afficherTitre(texte) {
+  const infos = $('#infos');
+  if ($('#titre').textContent === texte) return;
+  const lecteur = $('#lecteur');
+  infos.classList.add('change');
+  setTimeout(() => { $('#titre').textContent = texte; infos.classList.remove('change'); }, 700);
+  lecteur.classList.add('annonce');
+  clearTimeout(lecteur.annonce);
+  lecteur.annonce = setTimeout(() => lecteur.classList.remove('annonce'), 8000);
+}
+function passerA(i) {
+  const nouveau = sons.pistes[i], ancien = sons.pistes[sons.actif];
+  if (!nouveau || ancien === nouveau) return;
+  if (ancien) fondre(ancien, 0, 3200, () => ancien.pause());
+  sons.actif = i;
+  nouveau.currentTime = 0;
+  nouveau.play().catch(() => {});
+  fondre(nouveau, VOLUME, 3200);
+  afficherTitre(PISTES[i].titre);
+}
+function piste_suivante(i) {
+  if (i === sons.actif && !sons.fin) passerA((i + 1) % PISTES.length);
+}
+function lancerMusique() {
+  sons.pistes = PISTES.map((p, i) => {
+    const a = new Audio(p.fichier);
+    a.preload = 'auto'; a.volume = 0;
+    a.addEventListener('timeupdate', () => { if (a.duration - a.currentTime < 3) piste_suivante(i); });
+    a.addEventListener('ended', () => piste_suivante(i));
+    a.addEventListener('error', () => { if (i === sons.actif) afficherTitre('Musique introuvable'); });
+    return a;
+  });
+  sons.pistes.forEach((a, i) => {
+    if (i === 0) return;
+    a.muted = true;
+    a.play().then(() => { if (i !== sons.actif) a.pause(); a.muted = sons.muet; }).catch(() => { a.muted = sons.muet; });
+  });
+  passerA(0);
+}
+function couperAuBout(actif) {
+  if (sons.fin === actif) return;
+  sons.fin = actif;
+  const courant = sons.pistes[sons.actif];
+  if (!courant) return;
+  if (actif) fondre(courant, 0, 9000, () => courant.pause());
+  else { courant.play().catch(() => {}); fondre(courant, VOLUME, 3000); }
+}
+function bruitDeLame() {
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) return;
+  const ctx = new AC(), n = Math.floor(ctx.sampleRate * .6);
+  const tampon = ctx.createBuffer(1, n, ctx.sampleRate), d = tampon.getChannelData(0);
+  for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+  const src = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain();
+  src.buffer = tampon; f.type = 'bandpass'; f.Q.value = 2.2;
+  const t = ctx.currentTime;
+  f.frequency.setValueAtTime(700, t); f.frequency.exponentialRampToValueAtTime(7000, t + .24);
+  g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.26, t + .13); g.gain.exponentialRampToValueAtTime(.0001, t + .55);
+  src.connect(f).connect(g).connect(ctx.destination); src.start();
+  const o = ctx.createOscillator(), og = ctx.createGain();
+  o.frequency.value = 3150; og.gain.setValueAtTime(.0001, t + .14); og.gain.exponentialRampToValueAtTime(.05, t + .16); og.gain.exponentialRampToValueAtTime(.0001, t + 1.1);
+  o.connect(og).connect(ctx.destination); o.start(t + .14); o.stop(t + 1.2);
+  setTimeout(() => ctx.close(), 1500);
+}
+
+let ouvert = false;
+function trancher() {
+  if (ouvert) return;
+  ouvert = true;
+  lancerMusique();
+  bruitDeLame();
+  scrollTo(0, 0);
+  const b = document.body;
+  b.classList.add('tranche');
+  const attente = reduit ? [0, 0] : [260, 1050];
+  setTimeout(() => b.classList.add('coupe'), attente[0]);
+  setTimeout(() => {
+    b.classList.add('ouvert');
+    $('#trancher').blur();
+    poserLarmes();
+    alignerTextures();
+    suivre();
+  }, attente[1]);
+}
+$('#trancher').addEventListener('click', trancher);
+$('#fumi').addEventListener('click', trancher);
+
+$('#son').addEventListener('click', () => {
+  sons.muet = !sons.muet;
+  const libelle = sons.muet ? 'Remettre la musique' : 'Couper la musique';
+  sons.pistes.forEach(a => { a.muted = sons.muet; });
+  document.body.classList.toggle('muet', sons.muet);
+  const b = $('#son');
+  b.setAttribute('aria-pressed', String(sons.muet));
+  b.setAttribute('aria-label', libelle);
+  b.title = libelle;
+});
+
+$('#volume').addEventListener('input', e => {
+  VOLUME = e.target.value / 100;
+  const courant = sons.pistes[sons.actif];
+  if (courant && !sons.fin) { clearInterval(courant.fonduEnCours); courant.volume = VOLUME; }
+});
+(function testVolume() {
+  const essai = new Audio();
+  essai.volume = 0.5;
+  if (essai.volume !== 0.5) document.body.classList.add('sans-volume');
+})();
+
+const observateur = new IntersectionObserver(entrees => {
+  entrees.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vu'); observateur.unobserve(e.target); }
+  });
+}, { rootMargin: '0px 0px -8% 0px' });
+paragraphes.forEach(p => observateur.observe(p));
+
+const actes = [...document.querySelectorAll('.acte')];
+const racine = document.documentElement;
+let acteCourant = 0, demandeEnCours = false;
+function suivre() {
+  demandeEnCours = false;
+  const total = racine.scrollHeight - innerHeight;
+  racine.style.setProperty('--avance', (total > 0 ? Math.min(1, scrollY / total) : 0).toFixed(4));
+  if (!ouvert) return;
+  let acte = 0;
+  actes.forEach((a, i) => { if (a.getBoundingClientRect().top < innerHeight * .55) acte = i; });
+  if (acte !== acteCourant) {
+    acteCourant = acte;
+    document.body.dataset.acte = acte;
+  }
+}
+addEventListener('scroll', () => { if (!demandeEnCours) { demandeEnCours = true; requestAnimationFrame(suivre); } }, { passive: true });
+
+(function fin() {
+  const fragment = $('#fragment'), bloc = $('#inacheve'), vide = $('.vide');
+  const fude = $('.fude'), trait = $('#trainee'), tache = $('.goutte');
+  const texte = fragment.textContent.replace(/'/g, '’');
+  fragment.setAttribute('aria-label', texte);
+  fragment.textContent = '';
+  const spans = [...texte].map(l => {
+    const s = document.createElement('i');
+    s.textContent = l; s.setAttribute('aria-hidden', 'true');
+    fragment.append(s);
+    return s;
+  });
+  const n = spans.length;
+
+  function pose(x, y, angle, ms, courbe) {
+    fude.style.transition = 'transform ' + ms + 'ms ' + (courbe || 'linear') + ', opacity .5s ease';
+    fude.style.transform = 'translate(' + x + 'px,' + (y - fude.offsetHeight / 2) + 'px) rotate(' + angle + 'deg)';
+  }
+  function pointe(s) {
+    const r = s.getBoundingClientRect(), v = vide.getBoundingClientRect();
+    return { x: r.right - v.left, y: r.top - v.top + r.height * .68 };
+  }
+
+  function ecrire() {
+    if (reduit) {
+      spans.forEach(s => { s.style.opacity = 1; });
+      bloc.classList.add('fini', 'tache', 'tampon');
+      fude.style.opacity = 1;
+      pose(vide.offsetWidth * .2, 170, -9, 0);
+      couperAuBout(true);
+      return;
+    }
+    const debut = pointe(spans[0]);
+    pose(debut.x, debut.y - 90, -34, 0);
+    requestAnimationFrame(() => { fude.style.opacity = 1; pose(debut.x, debut.y, -30, 700, 'ease-out'); });
+
+    let t = 950;
+    spans.forEach((s, i) => {
+      const reste = n - i, l = s.textContent;
+      let attente = 42 + Math.random() * 42;
+      if (reste < 16) attente *= 1 + (16 - reste) * .34;
+      if (l === ',') attente += 330;
+      if (l === '…') attente += 800;
+      if (l === '.') attente += 520;
+      t += attente;
+      const seche = reste > 44 ? 1 : 1 - .68 * Math.pow((44 - reste) / 44, 1.6);
+      setTimeout(() => {
+        s.style.opacity = seche.toFixed(2);
+        const p = pointe(s);
+        pose(p.x, p.y + Math.sin(i * 1.7) * 1.6, -30 + Math.sin(i * .8) * 3.5, 70);
+      }, t);
+    });
+
+    const bout = () => pointe(spans[n - 1]);
+    t += 800;
+    [[-27, 2], [-33, -1], [-26, 1], [-32, 0]].forEach(([a, d], k) => {
+      setTimeout(() => { const p = bout(); pose(p.x + d, p.y, a, 120); }, t + k * 130);
+    });
+    t += 900;
+
+    setTimeout(() => {
+      couperAuBout(true);
+      const v = vide.getBoundingClientRect(), r = spans[n - 1].getBoundingClientRect();
+      let depart = r.right - v.left + 6, decale = 0;
+      if (v.width - depart < 170) { depart = 0; decale = 36; }
+      const large = Math.max(90, v.width - depart - 46);
+      const haut = r.top - v.top + r.height * .55 - 19 + decale;
+      trait.style.left = depart + 'px'; trait.style.top = haut + 'px'; trait.style.width = large + 'px';
+      tache.style.left = Math.min(v.width - 56, depart + large - 6) + 'px'; tache.style.top = (haut + 30) + 'px';
+      bloc.classList.add('fini');
+      pose(depart + large, haut + 22, -16, 2500, 'cubic-bezier(.3, .6, .4, 1)');
+    }, t);
+    t += 2500;
+
+    setTimeout(() => {
+      bloc.classList.add('tache');
+      pose(vide.offsetWidth * .2, 176, -9, 950, 'cubic-bezier(.45, 0, .7, 1.12)');
+    }, t);
+    setTimeout(() => bloc.classList.add('tampon'), t + 1500);
+  }
+
+  let lance = false;
+  new IntersectionObserver(([e]) => {
+    if (e.isIntersecting && !lance) { lance = true; ecrire(); }
+  }, { rootMargin: '0px 0px -28% 0px' }).observe(fragment);
+  new IntersectionObserver(([e]) => {
+    if (!lance || !bloc.classList.contains('fini')) return;
+    couperAuBout(e.isIntersecting);
+  }).observe(bloc);
+  new IntersectionObserver(([e]) => { if (e.isIntersecting) document.body.classList.add('pied'); }, { threshold: .15 }).observe($('#higanbana'));
+})();
+
+(function preparerEtui() {
+  const a = $('#fumi .a'), b = a.cloneNode(true);
+  b.classList.replace('a', 'b');
+  b.querySelectorAll('[id]').forEach(n => n.removeAttribute('id'));
+  a.after(b);
+})();
+animerPetales();
+</script>
+</body>
+</html>
